@@ -126,18 +126,18 @@ This package is based on the following codebases:
 If this project is helpful to your research endeavours, please cite the following works:
 ```bibtex
 @article{waldGPUfriendlyParallelAlmost2022a,
-	title        = {A {{GPU-friendly}}, Parallel, and (Almost-) in-Place Algorithm for Building Left-Balanced Kd-{{Trees}}},
-	author       = {Wald, Ingo},
-	year         = 2022,
-	journal      = {arXiv preprint arXiv:2211.00120},
-	eprint       = {2211.00120},
-	archiveprefix = {arxiv}
+    title        = {A {{GPU-friendly}}, Parallel, and (Almost-) in-Place Algorithm for Building Left-Balanced Kd-{{Trees}}},
+    author       = {Wald, Ingo},
+    year         = 2022,
+    journal      = {arXiv preprint arXiv:2211.00120},
+    eprint       = {2211.00120},
+    archiveprefix = {arxiv}
 }
 
 @article{ueckerCanYouSeeMeNow2024,
-	title        = {{{Can You See Me Now?}}, Blind Spot Estimation for Autonomous Vehicles using Scenario-Based Simulation with Random Reference Sensors},
-	author       = {Uecker, Marc},
-	year         = 2024,
+    title        = {{{Can You See Me Now?}}, Blind Spot Estimation for Autonomous Vehicles using Scenario-Based Simulation with Random Reference Sensors},
+    author       = {Uecker, Marc},
+    year         = 2024,
     eprint       = {TODO}
 }
 ```
