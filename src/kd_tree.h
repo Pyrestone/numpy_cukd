@@ -7,13 +7,14 @@
 
 // Copyright Marc Uecker (MIT License)
 
-const int KDTree_MAX_NEIGHBORS=64;
+const int KDTree_MAX_NEIGHBORS = 64;
 
-#define make_noise() {printf("%s called\n", __PRETTY_FUNCTION__);}
-#define make_noise() {}
+#define make_noise() \
+    { printf("%s called\n", __PRETTY_FUNCTION__); }
+#define make_noise() \
+    {}
 
-
-//#define USE_EXPLICIT_DIM 1
+// #define USE_EXPLICIT_DIM 1
 
 #define CUDA_CHECK_ERROR(call)                                                                            \
     {                                                                                                     \
@@ -93,58 +94,58 @@ __global__ void query_fcp(const float3* query_points, BasicPoint* data, const in
     }
 }
 
-__global__ void radius_neighbors(const BasicPoint* data, const int num_points, const float radius, int* neighbors){
+__global__ void radius_neighbors(const BasicPoint* data, const int num_points, const float radius, int* neighbors) {
     int tidx = threadIdx.x + blockIdx.x * blockDim.x;
     if (tidx >= num_points) {
         return;
     }
     float3 query_point = data[tidx].position;
 
-    int out_index=data[tidx].index;
-    
-    using CandidateList=cukd::HeapCandidateList<KDTree_MAX_NEIGHBORS>;
+    int out_index = data[tidx].index;
+
+    using CandidateList = cukd::HeapCandidateList<KDTree_MAX_NEIGHBORS>;
     CandidateList result(radius);
 
-    cukd::stackBased::knn<CandidateList,BasicPoint,BasicPoint_traits>(result,query_point,data,num_points);
+    cukd::stackBased::knn<CandidateList, BasicPoint, BasicPoint_traits>(result, query_point, data, num_points);
 
-    int num_neighbors=0;
-    for(int i=0; i<KDTree_MAX_NEIGHBORS; ++i){
-        int r=result.get_pointID(i);
-        if(r>=0){
-            r=data[r].index;
-            neighbors[out_index*(KDTree_MAX_NEIGHBORS+1)+1+num_neighbors]=r;
-            num_neighbors+=1;
+    int num_neighbors = 0;
+    for (int i = 0; i < KDTree_MAX_NEIGHBORS; ++i) {
+        int r = result.get_pointID(i);
+        if (r >= 0) {
+            r = data[r].index;
+            neighbors[out_index * (KDTree_MAX_NEIGHBORS + 1) + 1 + num_neighbors] = r;
+            num_neighbors += 1;
         }
     }
-    neighbors[out_index*(KDTree_MAX_NEIGHBORS+1)]=num_neighbors;
+    neighbors[out_index * (KDTree_MAX_NEIGHBORS + 1)] = num_neighbors;
 }
 
-__global__ void radius_neighbors_distance_based(const BasicPoint* data, const int num_points, const float radius_multiplier, int* neighbors){
+__global__ void radius_neighbors_distance_based(const BasicPoint* data, const int num_points, const float radius_multiplier, int* neighbors) {
     int tidx = threadIdx.x + blockIdx.x * blockDim.x;
     if (tidx >= num_points) {
         return;
     }
     float3 query_point = data[tidx].position;
 
-    int out_index=data[tidx].index;
+    int out_index = data[tidx].index;
 
     float radius = radius_multiplier * (query_point.x * query_point.x + query_point.y * query_point.y + query_point.z * query_point.z);
 
-    using CandidateList=cukd::HeapCandidateList<KDTree_MAX_NEIGHBORS>;
+    using CandidateList = cukd::HeapCandidateList<KDTree_MAX_NEIGHBORS>;
     CandidateList result(radius);
 
-    cukd::stackBased::knn<CandidateList,BasicPoint,BasicPoint_traits>(result,query_point,data,num_points);
+    cukd::stackBased::knn<CandidateList, BasicPoint, BasicPoint_traits>(result, query_point, data, num_points);
 
-    int num_neighbors=0;
-    for(int i=0; i<KDTree_MAX_NEIGHBORS; ++i){
-        int r=result.get_pointID(i);
-        if(r>=0){
-            r=data[r].index;
+    int num_neighbors = 0;
+    for (int i = 0; i < KDTree_MAX_NEIGHBORS; ++i) {
+        int r = result.get_pointID(i);
+        if (r >= 0) {
+            r = data[r].index;
         }
-        neighbors[out_index*(KDTree_MAX_NEIGHBORS+1)+1+num_neighbors]=r;
-        num_neighbors+=static_cast<int>(r>=0);
+        neighbors[out_index * (KDTree_MAX_NEIGHBORS + 1) + 1 + num_neighbors] = r;
+        num_neighbors += static_cast<int>(r >= 0);
     }
-    neighbors[out_index*(KDTree_MAX_NEIGHBORS+1)]=num_neighbors;
+    neighbors[out_index * (KDTree_MAX_NEIGHBORS + 1)] = num_neighbors;
 }
 
 class Immovable {
@@ -188,7 +189,7 @@ class cudaContainer : public Immovable {
         this->buffer_size = roundUpToNearestPowerOf2(num_points);
         this->buffer_bytes = this->buffer_size * sizeof(T);
 
-        assert(this->buffer_bytes>=this->num_bytes);
+        assert(this->buffer_bytes >= this->num_bytes);
 
         this->stream = stream;
     }
@@ -319,14 +320,14 @@ class cudaContainer : public Immovable {
     void to_gpu() {
         make_noise();
         assert(this->host_ptr != nullptr);
-        assert(this->num_bytes>0);
+        assert(this->num_bytes > 0);
         CUDA_CHECK_ERROR(cudaMemcpyAsync(this->on_gpu(), this->on_cpu(), this->num_bytes, cudaMemcpyHostToDevice, stream));
     }
 
     void to_cpu() {
         make_noise();
         assert(this->device_ptr != nullptr);
-        assert(this->num_bytes>0);
+        assert(this->num_bytes > 0);
         CUDA_CHECK_ERROR(cudaMemcpyAsync(this->on_cpu(), this->on_gpu(), this->num_bytes, cudaMemcpyDeviceToHost, stream));
     }
 
@@ -358,14 +359,12 @@ class cudaContainer : public Immovable {
         }
         this->num_points = num_points;
         this->num_bytes = num_points * sizeof(T);
-        assert(buffer_bytes>=num_bytes);
+        assert(buffer_bytes >= num_bytes);
     }
 };
 
 using KDTreeQuery = cudaContainer<float3>;
 using KDTreeQueryResult = cudaContainer<int32_t>;
-
-
 
 class KDTree3D : public Immovable {
     /*
@@ -493,7 +492,7 @@ class KDTree3D : public Immovable {
     void sync() {
         make_noise();
         CUDA_CHECK_ERROR(cudaStreamSynchronize(this->stream));
-        }
+    }
 
     void alloc_host() {
         make_noise();
@@ -540,7 +539,7 @@ class KDTree3D : public Immovable {
     void to_gpu() {
         make_noise();
         assert(this->host_ptr != nullptr);
-        assert(this->num_bytes>0);
+        assert(this->num_bytes > 0);
         CUDA_CHECK_ERROR(cudaDeviceSynchronize());
         CUDA_CHECK_ERROR(cudaMemcpyAsync(this->on_gpu(), this->on_cpu(), this->num_bytes, cudaMemcpyHostToDevice, stream));
     }
@@ -548,7 +547,7 @@ class KDTree3D : public Immovable {
     void to_cpu() {
         make_noise();
         assert(this->device_ptr != nullptr);
-        assert(this->num_bytes>0);
+        assert(this->num_bytes > 0);
         CUDA_CHECK_ERROR(cudaMemcpyAsync(this->on_cpu(), this->on_gpu(), this->num_bytes, cudaMemcpyDeviceToHost, stream));
     }
 
@@ -616,31 +615,31 @@ class KDTree3D : public Immovable {
         query_fcp<<<grid_size, block_size, 0, stream>>>(query.on_gpu(), this->on_gpu(), this->num_points, query.size(), radius, result.on_gpu());
     }
 
-    void query_neighbors(float radius, cudaContainer<int>& neighbors_out){
+    void query_neighbors(float radius, cudaContainer<int>& neighbors_out) {
         make_noise();
         assert(neighbors_out.get_stream() == this->stream);
 
-        if(neighbors_out.size() != this->num_points*(KDTree_MAX_NEIGHBORS+1)){
-            neighbors_out.resize(this->num_points*(KDTree_MAX_NEIGHBORS+1));
+        if (neighbors_out.size() != this->num_points * (KDTree_MAX_NEIGHBORS + 1)) {
+            neighbors_out.resize(this->num_points * (KDTree_MAX_NEIGHBORS + 1));
         }
 
         int block_size = 1024;
         int grid_size = get_grid_size(this->num_points, block_size);
         assert(this->built);
-        radius_neighbors<<<grid_size, block_size, 0, stream>>>(this->device_ptr,this->num_points,radius,neighbors_out.on_gpu());
+        radius_neighbors<<<grid_size, block_size, 0, stream>>>(this->device_ptr, this->num_points, radius, neighbors_out.on_gpu());
     }
 
-    void query_neighbors_db(float radius_multiplier, cudaContainer<int>& neighbors_out){
+    void query_neighbors_db(float radius_multiplier, cudaContainer<int>& neighbors_out) {
         make_noise();
         assert(neighbors_out.get_stream() == this->stream);
 
-        if(neighbors_out.size() != this->num_points*(KDTree_MAX_NEIGHBORS+1)){
-            neighbors_out.resize(this->num_points*(KDTree_MAX_NEIGHBORS+1));
+        if (neighbors_out.size() != this->num_points * (KDTree_MAX_NEIGHBORS + 1)) {
+            neighbors_out.resize(this->num_points * (KDTree_MAX_NEIGHBORS + 1));
         }
 
         int block_size = 1024;
         int grid_size = get_grid_size(this->num_points, block_size);
         assert(this->built);
-        radius_neighbors_distance_based<<<grid_size, block_size, 0, stream>>>(this->device_ptr,this->num_points,radius_multiplier,neighbors_out.on_gpu());
+        radius_neighbors_distance_based<<<grid_size, block_size, 0, stream>>>(this->device_ptr, this->num_points, radius_multiplier, neighbors_out.on_gpu());
     }
 };
