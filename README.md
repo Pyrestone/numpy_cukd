@@ -11,9 +11,9 @@ See test/benchmark_X.py for details
 
 |              Method             | total time (mean ± std) |     build time    |     query time     |
 |:------------------------------- |------------------------:|------------------:|-------------------:|
-| scipy cKDTree                   |     132.81 ms ± 4.00 ms |   29.15 ± 0.74 ms |   103.65 ± 3.51 ms |
-| numpy_cukd                      |       9.49 ms ± 0.56 ms |    7.19 ± 0.49 ms |     2.30 ± 0.17 ms |
-| numpy_cukd (with buffer re-use) |   **7.59 ms** ± 0.60 ms |**6.18** ± 0.54 ms | **1.40** ± 0.14 ms |
+| scipy cKDTree                   |     132.81 ± 4.00 ms |   29.15 ± 0.74 ms |   103.65 ± 3.51 ms |
+| numpy_cukd                      |       9.49 ± 0.56 ms |    7.19 ± 0.49 ms |     2.30 ± 0.17 ms |
+| numpy_cukd (with buffer re-use) |   **7.59** ± 0.60 ms |**6.18** ± 0.54 ms | **1.40** ± 0.14 ms |
 
 ## Examples
 
