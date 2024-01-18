@@ -9,11 +9,24 @@ Based on the C++/CUDA code from https://github.com/ingowald/cudaKDTree
 
 See test/benchmark_X.py for details
 
+Benchmarks with 128k points and 128k query points:
+
 |              Method             | total time (mean ± std) |     build time    |     query time     |
 |:------------------------------- |------------------------:|------------------:|-------------------:|
-| scipy cKDTree                   |     132.81 ± 4.00 ms |   29.15 ± 0.74 ms |   103.65 ± 3.51 ms |
-| numpy_cukd                      |       9.49 ± 0.56 ms |    7.19 ± 0.49 ms |     2.30 ± 0.17 ms |
-| numpy_cukd (with buffer re-use) |   **7.59** ± 0.60 ms |**6.18** ± 0.54 ms | **1.40** ± 0.14 ms |
+| scipy cKDTree                   |        132.81 ± 4.00 ms |   29.15 ± 0.74 ms |   103.65 ± 3.51 ms |
+| scipy cKDTree (16 threads)      |         40.74 ± 0.92 ms |   28.45 ± 0.30 ms |    12.29 ± 0.92 ms |
+| pykdtree (16 threads)           |         18.52 ± 1.76 ms |   10.49 ± 0.34 ms |     8.03 ± 1.57 ms |
+| numpy_cukd                      |          9.49 ± 0.56 ms |    7.19 ± 0.49 ms |     2.30 ± 0.17 ms |
+| numpy_cukd (with buffer re-use) |      **7.59** ± 0.60 ms |**6.18** ± 0.54 ms | **1.40** ± 0.14 ms |
+
+Benchmarks with 1M points and 1M query points:
+
+|              Method             | total time (mean ± std) |      build time     |      query time      |
+|:------------------------------- |------------------------:|--------------------:|---------------------:|
+| scipy cKDTree (16 threads)      |       482.14 ± 17.96 ms |   291.69 ± 10.08 ms |    190.45 ± 10.00 ms |
+| pykdtree (16 threads)           |        174.83 ± 7.62 ms |    100.43 ± 1.54 ms |      74.40 ± 6.56 ms |
+| numpy_cukd                      |         68.11 ± 1.59 ms |     51.21 ± 1.03 ms |      16.90 ± 0.84 ms |
+| numpy_cukd (with buffer re-use) |     **60.13** ± 1.26 ms | **46.20** ± 0.95 ms |  **13.93** ± 0.88 ms |
 
 ## Examples
 
