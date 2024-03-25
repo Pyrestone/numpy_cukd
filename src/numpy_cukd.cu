@@ -55,7 +55,7 @@ py::capsule create_kdtree(const size_t size=0){
     });
 }
 
-void build_tree(py::capsule tree, const py::array_t<float> points){
+void build_tree(py::capsule tree, const py::array_t<float, py::array::c_style | py::array::forcecast> points){
     KDTree3D* t = tree.get_pointer<KDTree3D>();
     if(points.ndim()!=2){
         throw std::runtime_error("points.ndim must be 2!");
@@ -77,7 +77,7 @@ void build_tree(py::capsule tree, const py::array_t<float> points){
     t->sync();
 }
 
-py::capsule make_tree(const py::array_t<float> points){
+py::capsule make_tree(const py::array_t<float, py::array::c_style | py::array::forcecast> points){
     if(points.ndim()!=2){
         throw std::runtime_error("points.ndim must be 2!");
     }
@@ -108,7 +108,7 @@ py::capsule create_result(const py::capsule tree, const size_t size=0){
 }
 
 
-py::array_t<int32_t> query_tree(py::capsule tree, const py::array_t<float> points, float radius, py::handle query = py::none(), py::handle result = py::none()){
+py::array_t<int32_t> query_tree(py::capsule tree, const py::array_t<float, py::array::c_style | py::array::forcecast> points, float radius, py::handle query = py::none(), py::handle result = py::none()){
     if(points.ndim()!=2){
         throw std::runtime_error("points.ndim must be 2!");
     }
@@ -147,7 +147,7 @@ py::array_t<int32_t> query_tree(py::capsule tree, const py::array_t<float> point
     const size_t shape[1]{n_query};
     const size_t strides[1]{elsize};
 
-    py::array_t<int32_t> out_array =py::array_t<int32_t>(shape,strides);
+    py::array_t<int32_t> out_array =py::array_t<int32_t, py::array::c_style | py::array::forcecast>(shape,strides);
     
 
 
