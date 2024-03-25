@@ -29,7 +29,7 @@ class CMakeBuild(build_ext):
 
 setup(
     name="numpy_cukd",
-    version="0.0.1",
+    version="0.0.2",
     author="Marc Uecker",
     author_email="marc.uecker@outlook.de",
     description="exposing cukd to numpy",
