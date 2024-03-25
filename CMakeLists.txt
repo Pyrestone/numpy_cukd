@@ -11,6 +11,15 @@ else()
     cmake_policy(SET CMP0104 OLD)
 endif()
 
+if (POLICY CMP0094)  # https://cmake.org/cmake/help/latest/policy/CMP0094.html
+    cmake_policy(SET CMP0094 OLD)  # FindPython should return the first matching Python
+endif ()
+if(${CMAKE_VERSION} VERSION_LESS "3.18.0")
+
+else()
+    set(Python3_FIND_UNVERSIONED_NAMES FIRST)
+endif()
+
 project(numpy_cukd LANGUAGES CXX C)
 
 set(CMAKE_CXX_STANDARD 14)
@@ -44,7 +53,7 @@ endif()
 
 # make sure to find python from conda, if a conda virtual env is activated
 set(Python3_FIND_VIRTUALENV "STANDARD")
-find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
+find_package(Python3 REQUIRED COMPONENTS Interpreter Development NumPy)
 
 
 #find_package(PythonInterp 3.6 REQUIRED)
