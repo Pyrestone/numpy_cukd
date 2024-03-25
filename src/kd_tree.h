@@ -8,11 +8,13 @@
 // Copyright Marc Uecker (MIT License)
 
 const int KDTree_MAX_NEIGHBORS = 64;
-
+#ifndef NDEBUG
 #define make_noise() \
     { printf("%s called\n", __PRETTY_FUNCTION__); }
+#else
 #define make_noise() \
     {}
+#endif
 
 // #define USE_EXPLICIT_DIM 1
 
