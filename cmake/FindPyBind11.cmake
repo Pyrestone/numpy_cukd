@@ -1,3 +1,6 @@
+# Author: Marc Uecker
+# License: MIT
+
 execute_process(COMMAND ${Python3_EXECUTABLE} -m pybind11 --cmakedir
                 OUTPUT_VARIABLE pybind11_PATH
                 RESULT_VARIABLE result)

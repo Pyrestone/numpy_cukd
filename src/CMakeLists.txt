@@ -21,7 +21,6 @@ target_compile_options(numpy_cukd PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:-gencode=ar
 -gencode=arch=compute_87,code=compute_87
 >)
 
-# set what comes before the library name, here no "lib"
 set_target_properties(numpy_cukd PROPERTIES PREFIX "")
 
 file(GLOB module_files "numpy_cukd/*.py")

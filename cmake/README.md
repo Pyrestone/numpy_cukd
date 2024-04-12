@@ -1,0 +1,1 @@
+Unless otherwise stated, the files in this directory originate from https://github.com/pkestene/pybind11-cuda/tree/223538 and are used under MIT license.

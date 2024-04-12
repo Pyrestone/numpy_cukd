@@ -1,8 +1,10 @@
+# Author: Marc Uecker
+# License: MIT
+# Based on https://github.com/pkestene/pybind11-cuda/tree/223538 (last version under MIT license)
+
 # use cmake version >= 3.12 so that to benefit from
 # the new FindPython3 module
 cmake_minimum_required(VERSION 3.12)
-
-message("Using CMake version ${CMAKE_VERSION}")
 
 if(${CMAKE_VERSION} VERSION_LESS "3.18.0")
     message("CMake version too old for policy CMP0104 (implicitly using OLD)")
@@ -51,16 +53,8 @@ if(NOT DEFINED CMAKE_CUDA_STANDARD)
   set(CMAKE_CUDA_STANDARD_REQUIRED ON)
 endif()
 
-# make sure to find python from conda, if a conda virtual env is activated
-set(Python3_FIND_VIRTUALENV "STANDARD")
 find_package(Python3 REQUIRED COMPONENTS Interpreter Development NumPy)
 
-
-#find_package(PythonInterp 3.6 REQUIRED)
-#find_package(PythonLibs 3.6 REQUIRED)
-
-include(CheckPythonLibs)
-check_python_libs("numpy")
 
 # we also need extra stuff to make sure compile flags are correctly
 # passed to nvcc / host compiler
